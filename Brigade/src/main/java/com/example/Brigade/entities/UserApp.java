@@ -16,5 +16,6 @@ public class UserApp {
     private int Id;
     private String lastname;
     private String firstname;
+    private String email;
     private long addressId;
 }

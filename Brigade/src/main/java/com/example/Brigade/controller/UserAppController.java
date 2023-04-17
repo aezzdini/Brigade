@@ -5,11 +5,14 @@ import com.example.Brigade.entities.UserApp;
 import com.example.Brigade.service.ResourceNotFoundException;
 import com.example.Brigade.service.UserAppService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
+@RequestMapping("/test")
 public class UserAppController {
 
    private UserAppService userAppService;
@@ -19,23 +22,36 @@ public class UserAppController {
     }
 
 
-    @GetMapping("/api/v1/users")
-    public List<UserApp> getAllUsers() {
-        return userAppService.getAllUsers();
+    @GetMapping("/anonymous")
+    public ResponseEntity<String> getAnonymous() {
+        return ResponseEntity.ok("hello AllUsers");
     }
-    @GetMapping("/api/v1/users/{id}")
-    public ResponseDto getUserById(@PathVariable Integer id) throws ResourceNotFoundException {
-        return userAppService.getUserById(id);
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<String> getAdmin(Principal principal, @PathVariable Integer id) {
+        JwtAuthenticationToken token =(JwtAuthenticationToken) principal;
+        String firstname = (String) token.getTokenAttributes().get("firstname");
+        String lastname = (String) token.getTokenAttributes().get("lastname");
+        String Email = (String) token.getTokenAttributes().get("email");
+        return ResponseEntity.ok("hello Admin\nUser name :" + lastname + "\nUser email : " + Email + "\nUser firstname : " + firstname);
     }
-    @PostMapping("/api/v1/users")
+    @GetMapping("/user")
+    public ResponseEntity<String> getUser(Principal principal,@PathVariable Integer id) {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
+        String firstname = (String) token.getTokenAttributes().get("firstname");
+        String lastname = (String) token.getTokenAttributes().get("lastname");
+        String Email = (String) token.getTokenAttributes().get("email");
+        return ResponseEntity.ok("hello Admin\nUser name :" + lastname + "\nUser email : " + Email + "\nUser firstname : " + firstname);
+    }
+
+    @PostMapping("")
     public UserApp createUser(@RequestBody UserApp user) {
         return userAppService.createUser(user);
     }
-    @PutMapping("/api/v1/users/{id}")
+    @PutMapping("")
     public UserApp updateUser(@PathVariable Integer id, @RequestBody UserApp userApp) throws ResourceNotFoundException {
         return userAppService.updateUser(id, userApp);
     }
-    @DeleteMapping("/api/v1/users/{id}")
+    @DeleteMapping("")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id) throws ResourceNotFoundException {
         userAppService.deleteUser(id);
         return ResponseEntity.ok().build();}

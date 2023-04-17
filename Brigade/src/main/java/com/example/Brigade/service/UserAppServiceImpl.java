@@ -6,19 +6,24 @@ import com.example.Brigade.dto.ResponseDto;
 import com.example.Brigade.dto.UserAppDto;
 import com.example.Brigade.entities.UserApp;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
+@ComponentScan
 @Service
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserAppServiceImpl implements UserAppService {
-    @Autowired
     private  APIClient apiClient;
     private UserAppRepository userAppRepository;
 
+    @Autowired
+    public UserAppServiceImpl(APIClient apiClient) {
+        this.apiClient = apiClient;
+    }
 
 
     @Override
